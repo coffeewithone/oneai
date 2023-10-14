@@ -8,6 +8,7 @@ export default function Home() {
   const [generatedContent, setGeneratedContent] = useState("");
 
   const handleSubmit = async function fetchNames(query: string) {
+    const customPrompt = `Answer this question: ${query} saying good morning first! `;
     setGeneratedContent("");
     setGenerating(true);
     const res = await fetch("http://127.0.0.1:5328/generate-answer", {
@@ -16,7 +17,7 @@ export default function Home() {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        content: query,
+        content: customPrompt,
       }),
     });
 
