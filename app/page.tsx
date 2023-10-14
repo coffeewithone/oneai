@@ -7,16 +7,16 @@ export default function Home() {
   const [generating, setGenerating] = useState(false);
   const [generatedContent, setGeneratedContent] = useState("");
 
-  const handleSubmit = async function fetchNames() {
-    setGeneratedContent(""); // Reset content here
+  const handleSubmit = async function fetchNames(query: string) {
+    setGeneratedContent("");
     setGenerating(true);
-    const res = await fetch("http://127.0.0.1:5328/generate-names", {
+    const res = await fetch("http://127.0.0.1:5328/generate-answer", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        content: searchQuery,
+        content: query,
       }),
     });
 
@@ -110,7 +110,8 @@ export default function Home() {
             onChange={(e) => setSearchQuery(e.target.value)}
             onKeyDown={(e) => {
               if (e.key === "Enter") {
-                handleSubmit();
+                e.preventDefault();
+                handleSubmit(searchQuery);
               }
             }}
           />
@@ -120,8 +121,9 @@ export default function Home() {
           <button
             className="btn bg-slate-50 hover:bg-slate-200 rounded-lg px-4 py-1 m-2 border-slate-200 border"
             onClick={(e) => {
-              setSearchQuery("office hour for sta 199?");
-              handleSubmit();
+              const query = " office hour for sta 199?";
+              setSearchQuery(" office hour for sta 199?");
+              handleSubmit(query);
             }}
           >
             office hour for sta 199?
@@ -129,29 +131,12 @@ export default function Home() {
           <button
             className="btn bg-slate-50 hover:bg-slate-200 rounded-lg px-4 py-1 mx-2 border-slate-200 border"
             onClick={(e) => {
+              const query = "How can I change my major?";
               setSearchQuery("How can I change my major?");
-              handleSubmit();
+              handleSubmit(query);
             }}
           >
             How can I change my major?
-          </button>
-          <button
-            className="btn bg-slate-50 hover:bg-slate-200 rounded-lg px-4 py-1 m-2 border-slate-200 border"
-            onClick={(e) => {
-              setSearchQuery("past CS 316 questions?");
-              handleSubmit();
-            }}
-          >
-            past CS 316 questions?
-          </button>
-          <button
-            className="btn bg-slate-50 hover:bg-slate-200 rounded-lg px-4 py-1 mx-2 border-slate-200 border"
-            onClick={(e) => {
-              setSearchQuery("How to apply for independet study");
-              handleSubmit();
-            }}
-          >
-            How to apply for independet study
           </button>
         </div>
       </div>

@@ -26,7 +26,7 @@ def hello_world():
     return "<p>Hello, World!</p>"
 
 
-@app.route('/generate-names', methods=['POST'])
+@app.route('/generate-answer', methods=['POST'])
 def generate_names():
     openai.api_key = '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'
     input_content = request.json.get('content', 'Generate a list of 20 great names for sentient cheesecakes that teach SQL')
