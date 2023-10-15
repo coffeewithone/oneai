@@ -35,6 +35,9 @@ def generate_names():
         for chunk in openai.ChatCompletion.create(
             model="gpt-3.5-turbo",
             messages=[{
+                "role": "system",
+                "content": "You are a helpful assistant."
+             },{
                 "role": "user",
                 "content": input_content
             }],
@@ -42,7 +45,7 @@ def generate_names():
         ):
             content = chunk["choices"][0].get("delta", {}).get("content")
             if content is not None:
-                yield content + "\n"
+                yield content 
 
     return Response(stream_with_context(generate()), content_type='text/plain')
 

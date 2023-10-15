@@ -1,5 +1,6 @@
 "use client";
 import { useRef, useState } from "react";
+import ReactMarkdown from "react-markdown";
 
 export default function Home() {
   const [searchQuery, setSearchQuery] = useState("");
@@ -26,7 +27,10 @@ export default function Home() {
       while (true) {
         const { done, value } = await reader.read();
         if (done) break;
-        setGeneratedContent((prevContent) => prevContent + new TextDecoder("utf-8").decode(value));
+
+        setGeneratedContent(
+          (prevContent) => prevContent + new TextDecoder("utf-8").decode(value).replace(/ ([.,;])/g, "$1")
+        );
       }
     }
     setGenerating(false);
@@ -117,7 +121,43 @@ export default function Home() {
             }}
           />
         </div>
-        <div className="px-20 py-5 overflow-auto   w-full text-left ">{generatedContent}</div>
+        <div className="px-20 py-5 overflow-auto  w-full text-left ">
+          <ReactMarkdown
+            components={{
+              a: ({ node, ...props }) => {
+                const href = props.href ? (props.href.startsWith("http") ? props.href : `https://${props.href}`) : "";
+                return (
+                  <span className="inline-flex items-center text-blue-400">
+                    <a
+                      className="text-blue-400 font-medium hover:underline"
+                      {...props}
+                      href={href}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    ></a>{" "}
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke-width="3"
+                      stroke="currentColor"
+                      className="w-4 h-4 ml-1"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        d="M4.5 19.5l15-15m0 0H8.25m11.25 0v11.25"
+                      />
+                    </svg>
+                  </span>
+                );
+              },
+            }}
+            className="whitespace-normal leading-7 text-slate-700"
+          >
+            {generatedContent}
+          </ReactMarkdown>
+        </div>
         <div className="container mx-auto text-center mt-8 gap-2 text-sm">
           <button
             className="btn bg-slate-50 hover:bg-slate-200 rounded-lg px-4 py-1 m-2 border-slate-200 border"
