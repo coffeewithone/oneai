@@ -14,7 +14,7 @@ export default function Home() {
     const customPrompt = `Answer this question: ${query} saying good morning first! `;
     setGeneratedContent("");
     setGenerating(true);
-    const res = await fetch("http://127.0.0.1:5328/generate-answer", {
+    const res = await fetch("/api/generate-answer", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
