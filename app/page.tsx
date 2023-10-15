@@ -1,6 +1,8 @@
 "use client";
 import { useRef, useState } from "react";
 import ReactMarkdown from "react-markdown";
+import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
+import { dracula } from "react-syntax-highlighter/dist/esm/styles/prism";
 
 export default function Home() {
   const [searchQuery, setSearchQuery] = useState("");
@@ -150,6 +152,28 @@ export default function Home() {
                       />
                     </svg>
                   </span>
+                );
+              },
+              code(props) {
+                const { children, className, node, ...rest } = props;
+                const match = /language-(\w+)/.exec(className || "");
+                const { ref, ...restWithoutRef } = rest;
+                return match ? (
+                  <SyntaxHighlighter
+                    {...restWithoutRef}
+                    showLineNumbers={true}
+                    children={String(children).replace(/\n$/, "")}
+                    style={dracula}
+                    language={match[1]}
+                    PreTag="div"
+                  />
+                ) : (
+                  <code
+                    {...rest}
+                    className={className}
+                  >
+                    {children}
+                  </code>
                 );
               },
             }}
