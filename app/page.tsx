@@ -201,12 +201,12 @@ export default function Home() {
           </div>
         </div> */}
 
-        <div className="pt-40 px-4 sm:px-10 bg-white">
+        <div className="pt-40 px-4 sm:px-10 ">
           <form
             action="#"
             className="relative"
           >
-            <div className="overflow-hidden p-3 rounded-lg border shadow-sm border-slate-300  focus:outline-none focus:ring-1 focus:ring-slate-300">
+            <div className=" bg-white overflow-hidden p-3 rounded-lg border shadow-sm border-slate-300  focus:outline-none focus:ring-1 focus:ring-slate-300">
               <textarea
                 className="resize-none pt-2 px-6 overflow-auto rounded-lg  focus:outline-none w-full"
                 placeholder="I'm looking for..."
