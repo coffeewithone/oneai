@@ -1,40 +1,56 @@
 "use client";
-import { useRef, useState } from "react";
+
+import { useEffect, useRef, useState } from "react";
 import ReactMarkdown from "react-markdown";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { dracula } from "react-syntax-highlighter/dist/esm/styles/prism";
 
 export default function Home() {
   const [searchQuery, setSearchQuery] = useState("");
-  const [answer, setAnswer] = useState("");
   const [generating, setGenerating] = useState(false);
   const [generatedContent, setGeneratedContent] = useState("");
 
-  const handleSubmit = async function fetchNames(query: string) {
-    const customPrompt = `Answer this question: ${query} saying good morning first! `;
+  const handleSubmit = async (
+    e?: React.KeyboardEvent<HTMLElement> | React.MouseEvent<HTMLButtonElement, MouseEvent>,
+    newSearchQuery?: string
+  ) => {
+    e?.preventDefault();
     setGeneratedContent("");
     setGenerating(true);
-    const res = await fetch("/api/generate-answer", {
+
+    const query = newSearchQuery || searchQuery;
+
+    const response = await fetch("/api/generate", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        content: customPrompt,
+        prompt: query,
       }),
     });
 
-    if (res.body) {
-      const reader = res.body.getReader();
-      while (true) {
-        const { done, value } = await reader.read();
-        if (done) break;
-
-        setGeneratedContent(
-          (prevContent) => prevContent + new TextDecoder("utf-8").decode(value).replace(/ ([.,;])/g, "$1")
-        );
-      }
+    if (!response.ok) {
+      throw new Error(response.statusText);
     }
+
+    // This data is a ReadableStream
+    const data = response.body;
+    if (!data) {
+      return;
+    }
+
+    const reader = data.getReader();
+    const decoder = new TextDecoder();
+    let done = false;
+
+    while (!done) {
+      const { value, done: doneReading } = await reader.read();
+      done = doneReading;
+      const chunkValue = decoder.decode(value);
+      setGeneratedContent((prev) => prev + chunkValue);
+    }
+
     setGenerating(false);
   };
 
@@ -110,6 +126,7 @@ export default function Home() {
             <button className="text-slate-500">STA 199</button>
             <button className="text-slate-500">CS 316</button>
           </div>
+
           <textarea
             className="p-6 overflow-auto rounded-lg border shadow-sm border-slate-300 w-full focus:outline-none focus:ring-1 focus:ring-slate-300"
             placeholder="I'm looking for..."
@@ -117,8 +134,7 @@ export default function Home() {
             onChange={(e) => setSearchQuery(e.target.value)}
             onKeyDown={(e) => {
               if (e.key === "Enter") {
-                e.preventDefault();
-                handleSubmit(searchQuery);
+                handleSubmit(e);
               }
             }}
           />
@@ -141,7 +157,7 @@ export default function Home() {
                       xmlns="http://www.w3.org/2000/svg"
                       fill="none"
                       viewBox="0 0 24 24"
-                      stroke-width="3"
+                      strokeWidth="3"
                       stroke="currentColor"
                       className="w-4 h-4 ml-1"
                     >
@@ -183,13 +199,13 @@ export default function Home() {
                         xmlns="http://www.w3.org/2000/svg"
                         fill="none"
                         viewBox="0 0 24 24"
-                        stroke-width="1.5"
+                        strokeWidth="1.5"
                         stroke="currentColor"
                         className="w-4 h-4 mr-1"
                       >
                         <path
-                          stroke-linecap="round"
-                          stroke-linejoin="round"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
                           d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75a1.125 1.125 0 01-1.125-1.125V7.875c0-.621.504-1.125 1.125-1.125H6.75a9.06 9.06 0 011.5.124m7.5 10.376h3.375c.621 0 1.125-.504 1.125-1.125V11.25c0-4.46-3.243-8.161-7.5-8.876a9.06 9.06 0 00-1.5-.124H9.375c-.621 0-1.125.504-1.125 1.125v3.5m7.5 10.375H9.375a1.125 1.125 0 01-1.125-1.125v-9.25m12 6.625v-1.875a3.375 3.375 0 00-3.375-3.375h-1.5a1.125 1.125 0 01-1.125-1.125v-1.5a3.375 3.375 0 00-3.375-3.375H9.75"
                         />
                       </svg>
@@ -223,9 +239,9 @@ export default function Home() {
           <button
             className="btn bg-slate-50 hover:bg-slate-200 rounded-lg px-4 py-1 m-2 border-slate-200 border"
             onClick={(e) => {
-              const query = " office hour for sta 199?";
-              setSearchQuery(" office hour for sta 199?");
-              handleSubmit(query);
+              const newQuery = " office hour for sta 199?";
+              setSearchQuery(newQuery);
+              handleSubmit(e, newQuery);
             }}
           >
             office hour for sta 199?
@@ -233,9 +249,9 @@ export default function Home() {
           <button
             className="btn bg-slate-50 hover:bg-slate-200 rounded-lg px-4 py-1 mx-2 border-slate-200 border"
             onClick={(e) => {
-              const query = "How can I change my major?";
-              setSearchQuery("How can I change my major?");
-              handleSubmit(query);
+              const newQuery = "How can I change my major?";
+              setSearchQuery(newQuery);
+              handleSubmit(e, newQuery);
             }}
           >
             How can I change my major?
