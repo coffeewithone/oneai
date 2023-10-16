@@ -17,7 +17,7 @@ export async function POST(req: Request): Promise<Response> {
 
   const payload: OpenAIStreamPayload = {
     model: "gpt-3.5-turbo",
-    messages: [{ role: "user", content: prompt }],
+    messages: [{ role: "user", content: `Always answer in markdown format and make the answer concise ${prompt}` }],
     temperature: 0.7,
     top_p: 1,
     frequency_penalty: 0,

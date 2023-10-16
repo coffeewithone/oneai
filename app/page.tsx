@@ -11,7 +11,10 @@ export default function Home() {
   const [generatedContent, setGeneratedContent] = useState("");
 
   const handleSubmit = async (
-    e?: React.KeyboardEvent<HTMLElement> | React.MouseEvent<HTMLButtonElement, MouseEvent>,
+    e?:
+      | React.KeyboardEvent<HTMLElement>
+      | React.MouseEvent<HTMLButtonElement, MouseEvent>
+      | React.TouchEvent<HTMLButtonElement>,
     newSearchQuery?: string
   ) => {
     e?.preventDefault();
@@ -122,22 +125,30 @@ export default function Home() {
 
         <div className="w-full justify-center flex flex-col items-center pt-60 px-20">
           <div className="flex justify-center items-center mb-2 gap-4">
-            <button className="text-slate-700 border-b-2 border-slate-700">Duke</button>
-            <button className="text-slate-500">STA 199</button>
+            <button className="text-slate-700 border-b-2 border-slate-700">STA 199</button>
+            <button className="text-slate-500">STA 360</button>
             <button className="text-slate-500">CS 316</button>
+            <button className="text-slate-500">CS 250</button>
           </div>
-
-          <textarea
-            className="p-6 overflow-auto rounded-lg border shadow-sm border-slate-300 w-full focus:outline-none focus:ring-1 focus:ring-slate-300"
-            placeholder="I'm looking for..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            onKeyDown={(e) => {
-              if (e.key === "Enter") {
-                handleSubmit(e);
-              }
-            }}
-          />
+          <div className="relative w-full">
+            <textarea
+              className="resize-none p-6 overflow-auto rounded-lg border shadow-sm border-slate-300 w-full focus:outline-none focus:ring-1 focus:ring-slate-300"
+              placeholder="I'm looking for..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") {
+                  handleSubmit(e);
+                }
+              }}
+            />
+            <button
+              className="absolute bottom-2 right-1 bg-slate-800 hover:bg-slate-700 text-white  py-1 px-4 mx-1 my-1 rounded"
+              onClick={(e) => handleSubmit(e)}
+            >
+              Find
+            </button>
+          </div>
         </div>
         <div className="px-20 py-5 overflow-auto  w-full text-left ">
           <ReactMarkdown
@@ -243,12 +254,22 @@ export default function Home() {
               setSearchQuery(newQuery);
               handleSubmit(e, newQuery);
             }}
+            onTouchEnd={(e) => {
+              const newQuery = " office hour for sta 199?";
+              setSearchQuery(newQuery);
+              handleSubmit(e, newQuery);
+            }}
           >
             office hour for sta 199?
           </button>
           <button
             className="btn bg-slate-50 hover:bg-slate-200 rounded-lg px-4 py-1 mx-2 border-slate-200 border"
             onClick={(e) => {
+              const newQuery = "How can I change my major?  ";
+              setSearchQuery(newQuery);
+              handleSubmit(e, newQuery);
+            }}
+            onTouchEnd={(e) => {
               const newQuery = "How can I change my major?";
               setSearchQuery(newQuery);
               handleSubmit(e, newQuery);
