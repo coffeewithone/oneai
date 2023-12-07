@@ -5,7 +5,7 @@ import ReactMarkdown from "react-markdown";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { dracula } from "react-syntax-highlighter/dist/esm/styles/prism";
 import { Listbox, Transition } from "@headlessui/react";
-import { CalendarIcon, PaperClipIcon, TagIcon, UserCircleIcon, BookOpenIcon } from "@heroicons/react/20/solid";
+import { BookOpenIcon } from "@heroicons/react/20/solid";
 <svg
   xmlns="http://www.w3.org/2000/svg"
   fill="none"
